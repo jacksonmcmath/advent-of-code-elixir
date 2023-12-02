@@ -5,7 +5,7 @@ defmodule AdventOfCode.MixProject do
     [
       app: :advent_of_code,
       version: "0.1.0",
-      elixir: "~> 1.9",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -14,7 +14,7 @@ defmodule AdventOfCode.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :inets]
+      extra_applications: [:logger, :inets, :ssl]
     ]
   end
 

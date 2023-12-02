@@ -50,10 +50,10 @@ defmodule AdventOfCode.Input do
   defp from_cache!(day, year), do: File.read!(cache_path(day, year))
 
   defp download!(day, year) do
-    {:ok, {{'HTTP/1.1', 200, 'OK'}, _, input}} =
+    {:ok, {{~c"HTTP/1.1", 200, ~c"OK"}, _, input}} =
       :httpc.request(
         :get,
-        {'https://adventofcode.com/#{year}/day/#{day}/input', headers()},
+        {~c"https://adventofcode.com/#{year}/day/#{day}/input", headers()},
         [],
         []
       )
@@ -84,7 +84,8 @@ defmodule AdventOfCode.Input do
 
   defp headers,
     do: [
-      {'user-agent', 'github.com/mhanberg/advent-of-code-elixir-starter by aoc@mitchellhanberg.com'},
-      {'cookie', String.to_charlist("session=" <> Keyword.get(config(), :session_cookie))}
+      {~c"user-agent",
+       ~c"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0"},
+      {~c"cookie", String.to_charlist("session=" <> Keyword.get(config(), :session_cookie))}
     ]
 end
