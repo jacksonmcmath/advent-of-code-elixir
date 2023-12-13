@@ -21,18 +21,11 @@ defmodule AdventOfCode.Day08 do
       |> Enum.filter(&String.ends_with?(&1, "A"))
       |> IO.inspect(label: "starting nodes")
 
-    Stream.cycle(directions)
-    |> Stream.with_index()
-    |> Enum.reduce_while(starting_nodes, fn {dir, idx}, current_nodes ->
-      cond do
-        Enum.all?(current_nodes, &String.ends_with?(&1, "Z")) ->
-          {:halt, idx}
-
-        true ->
-          {:cont,
-           current_nodes |> Enum.map(&(nodes[&1] |> elem(dir))) |> IO.inspect(label: "next nodes")}
-      end
-    end)
+    for node <- starting_nodes, reduce: 1 do
+      lcm ->
+        n = steps(directions, nodes, node, fn n -> String.ends_with?(n, "Z") end)
+        div(n * lcm, Integer.gcd(n, lcm))
+    end
   end
 
   defp parse_input(input) do
@@ -61,5 +54,15 @@ defmodule AdventOfCode.Day08 do
       {node, {l, r}}
     end)
     |> Map.new()
+  end
+
+  defp steps(seq, nodes, src, p?) do
+    do_steps = fn
+      [], node, len, rec -> rec.(seq, node, len, rec)
+      [1 | xs], {_, r}, len, rec -> (p?.(r) && len + 1) || rec.(xs, nodes[r], len + 1, rec)
+      [0 | xs], {l, _}, len, rec -> (p?.(l) && len + 1) || rec.(xs, nodes[l], len + 1, rec)
+    end
+
+    do_steps.(seq, nodes[src], 0, do_steps)
   end
 end
